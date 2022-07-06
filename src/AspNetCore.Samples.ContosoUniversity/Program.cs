@@ -10,6 +10,13 @@ builder.Services.AddDbContext<SchoolContext>(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
+    dataContext.Database.Migrate();
+    DbInitializer.Initialize(dataContext);
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
